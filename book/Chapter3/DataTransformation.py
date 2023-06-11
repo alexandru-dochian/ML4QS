@@ -9,10 +9,12 @@
 
 from sklearn.decomposition import PCA
 
-from book import util as util
+from book.util import util as util
 from scipy.signal import butter, lfilter, filtfilt
 
 # This class removes the high frequency data (that might be considered noise) from the data.
+
+
 class LowPassFilter:
 
     def low_pass_filter(self, data_table, col, sampling_frequency, cutoff_frequency, order=5, phase_shift=True):
@@ -30,6 +32,8 @@ class LowPassFilter:
 
 # Class for Principal Component Analysis. We can only apply this when we do not have missing values (i.e. NaN).
 # For this we have to impute these first, be aware of this.
+
+
 class PrincipalComponentAnalysis:
 
     pca = []
@@ -43,7 +47,7 @@ class PrincipalComponentAnalysis:
         dt_norm = util.normalize_dataset(data_table, cols)
 
         # perform the PCA.
-        self.pca = PCA(n_components = len(cols))
+        self.pca = PCA(n_components=len(cols))
         self.pca.fit(dt_norm[cols])
         # And return the explained variances.
         return self.pca.explained_variance_ratio_
@@ -55,14 +59,14 @@ class PrincipalComponentAnalysis:
         dt_norm = util.normalize_dataset(data_table, cols)
 
         # perform the PCA.
-        self.pca = PCA(n_components = number_comp)
+        self.pca = PCA(n_components=number_comp)
         self.pca.fit(dt_norm[cols])
 
         # Transform our old values.
         new_values = self.pca.transform(dt_norm[cols])
 
-        #And add the new ones:
+        # And add the new ones:
         for comp in range(0, number_comp):
-            data_table['pca_' +str(comp+1)] = new_values[:,comp]
+            data_table['pca_' + str(comp+1)] = new_values[:, comp]
 
         return data_table

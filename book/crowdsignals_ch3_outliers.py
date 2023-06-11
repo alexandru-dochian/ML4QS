@@ -20,6 +20,7 @@ DATA_PATH = Path('./intermediate_datafiles/')
 DATASET_FNAME = 'chapter2_result.csv'
 RESULT_FNAME = 'chapter3_result_outliers.csv'
 
+
 def print_flags():
     """
     Prints all entries in FLAGS variable.
@@ -43,8 +44,6 @@ def main():
     # We'll create an instance of our visualization class to plot the results.
     DataViz = VisualizeDataset(__file__)
 
-
-
     # Step 1: Let us see whether we have some outliers we would prefer to remove.
 
     # Determine the columns we want to experiment on.
@@ -52,7 +51,7 @@ def main():
     # Create the outlier classes.
     OutlierDistr = DistributionBasedOutlierDetection()
     OutlierDist = DistanceBasedOutlierDetection()
-    #chose one of the outlier methods: chauvenet, mixture, distance or LOF via the argument parser at the bottom of this page. 
+    # chose one of the outlier methods: chauvenet, mixture, distance or LOF via the argument parser at the bottom of this page.
 
     if FLAGS.mode == 'chauvenet':
 
@@ -119,7 +118,6 @@ if __name__ == '__main__':
     # Command line arguments
     parser = argparse.ArgumentParser()
 
-
     parser.add_argument('--mode', type=str, default='final',
                         help="Select what version to run: LOF, distance, mixture, chauvenet or final \
                         'LOF' applies the Local Outlier Factor to a single variable \
@@ -130,7 +128,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--C', type=float, default=2,
                         help="Chauvenet: C parameter")
-   
+
     parser.add_argument('--K', type=int, default=5,
                         help="Local Outlier Factor:  K is the number of neighboring points considered")
 

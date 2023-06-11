@@ -7,12 +7,12 @@
 #                                                            #
 ##############################################################
 
+from book.util import util
 import scipy
 import math
 from sklearn.mixture import GaussianMixture
 import numpy as np
 import pandas as pd
-from book import util as util
 
 
 # Class for outlier detection algorithms based on some distribution of the data. They
@@ -112,7 +112,8 @@ class DistanceBasedOutlierDetection:
                                      'simple_dist_outlier'])
             data_table = pd.concat([data_table, data_mask], axis=1)
         else:
-            data_table['simple_dist_outlier'] = pd.Series(mask, index=new_data_table.index)
+            data_table['simple_dist_outlier'] = pd.Series(
+                mask, index=new_data_table.index)
         del self.distances
         return data_table
 
@@ -133,14 +134,16 @@ class DistanceBasedOutlierDetection:
         outlier_factor = []
         # Compute the outlier score per row.
         for i in range(0, len(new_data_table.index)):
-            if i % 100 == 0: print(f'Completed {i} steps for LOF.')
+            if i % 100 == 0:
+                print(f'Completed {i} steps for LOF.')
             outlier_factor.append(self.local_outlier_factor_instance(i, k))
         if data_table.get('lof') is None:
             data_outlier_probs = pd.DataFrame(
                 outlier_factor, index=new_data_table.index, columns=['lof'])
             data_table = pd.concat([data_table, data_outlier_probs], axis=1)
         else:
-            data_table['lof'] = pd.Series(outlier_factor, index=new_data_table.index)
+            data_table['lof'] = pd.Series(
+                outlier_factor, index=new_data_table.index)
         del self.distances
         return data_table
 
@@ -160,7 +163,8 @@ class DistanceBasedOutlierDetection:
 
         # Compute the reachability distance between i and all neighbors.
         for i, neighbor in enumerate(neighbors_i):
-            reachability_distances_array[i] = self.reachability_distance(k, instance, neighbor)
+            reachability_distances_array[i] = self.reachability_distance(
+                k, instance, neighbor)
         if (not any(reachability_distances_array)) or (sum(reachability_distances_array) == 0):
             return float(self.HIGH_VALUE)
         else:
@@ -172,26 +176,29 @@ class DistanceBasedOutlierDetection:
     def k_distance(self, i, k):
         # Simply look up the values in the distance table, select the min_pts^th lowest value and take the value pairs
         # Take min_pts + 1 as we also have the instance itself in there.
-        neighbors = np.argpartition(np.array(self.distances.iloc[i,:]), k+1)[0:(k+1)].tolist()
+        neighbors = np.argpartition(
+            np.array(self.distances.iloc[i, :]), k+1)[0:(k+1)].tolist()
         if i in neighbors:
             neighbors.remove(i)
-        return max(self.distances.iloc[i,neighbors]), neighbors
+        return max(self.distances.iloc[i, neighbors]), neighbors
 
     # Compute the local outlier score of our row i given a setting for k.
     def local_outlier_factor_instance(self, i, k):
         # Compute the k-distance for i.
         k_distance_value, neighbors = self.k_distance(i, k)
         # Computer the local reachability given the found k-distance and neighbors.
-        instance_lrd = self.local_reachability_density(i, k, k_distance_value, neighbors)
+        instance_lrd = self.local_reachability_density(
+            i, k, k_distance_value, neighbors)
         lrd_ratios_array = [0] * len(neighbors)
 
         # Computer the k-distances and local reachability density of the neighbors
         for i, neighbor in enumerate(neighbors):
-            k_distance_value_neighbor, neighbors_neighbor = self.k_distance(neighbor, k)
-            neighbor_lrd = self.local_reachability_density(neighbor, k, k_distance_value_neighbor, neighbors_neighbor)
+            k_distance_value_neighbor, neighbors_neighbor = self.k_distance(
+                neighbor, k)
+            neighbor_lrd = self.local_reachability_density(
+                neighbor, k, k_distance_value_neighbor, neighbors_neighbor)
             # Store the ratio between the neighbor and the row i.
             lrd_ratios_array[i] = neighbor_lrd / instance_lrd
 
         # Return the average ratio.
         return sum(lrd_ratios_array) / len(neighbors)
-

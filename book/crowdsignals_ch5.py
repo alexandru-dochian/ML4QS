@@ -9,7 +9,7 @@
 
 from book.Chapter5 import NonHierarchicalClustering
 from book.Chapter5 import HierarchicalClustering
-from book import util as util
+from book.util import util as util
 from book.util.VisualizeDataset import VisualizeDataset
 
 import copy
@@ -83,7 +83,6 @@ def main():
 
         # And run k medoids with the highest silhouette score
 
-        
         k = k_values[np.argmax(silhouette_values)]
         print(f'Highest K-Medoids silhouette score: k = {k}')
 
@@ -107,7 +106,7 @@ def main():
         for k in k_values:
             print(f'k = {k}')
             dataset, l = clusteringH.agglomerative_over_instances(dataset, [
-                                                                          'acc_phone_x', 'acc_phone_y', 'acc_phone_z'], k, 'euclidean', use_prev_linkage=True, link_function='ward')
+                'acc_phone_x', 'acc_phone_y', 'acc_phone_z'], k, 'euclidean', use_prev_linkage=True, link_function='ward')
             silhouette_score = dataset['silhouette'].mean()
             print(f'silhouette = {silhouette_score}')
             silhouette_values.append(silhouette_score)
@@ -122,8 +121,10 @@ def main():
         # And we select the outcome dataset of the knn clustering....
         clusteringNH = NonHierarchicalClustering()
 
-        dataset = clusteringNH.k_means_over_instances(dataset, ['acc_phone_x', 'acc_phone_y', 'acc_phone_z'], FLAGS.k, 'default', 50, 50)
-        DataViz.plot_clusters_3d(dataset, ['acc_phone_x', 'acc_phone_y', 'acc_phone_z'], 'cluster', ['label'])
+        dataset = clusteringNH.k_means_over_instances(
+            dataset, ['acc_phone_x', 'acc_phone_y', 'acc_phone_z'], FLAGS.k, 'default', 50, 50)
+        DataViz.plot_clusters_3d(
+            dataset, ['acc_phone_x', 'acc_phone_y', 'acc_phone_z'], 'cluster', ['label'])
         DataViz.plot_silhouette(dataset, 'cluster', 'silhouette')
         util.print_latex_statistics_clusters(
             dataset, 'cluster', ['acc_phone_x', 'acc_phone_y', 'acc_phone_z'], 'label')

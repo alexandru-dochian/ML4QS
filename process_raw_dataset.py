@@ -16,7 +16,7 @@ notebook_path = os.path.realpath("tara")
 
 print("Please wait, this will take a while to run!")
 
-dataset: pd.DataFrame = CreateDataset(DATASET_PATH, GRANULARITY)
+dataset: CreateDataset = CreateDataset(DATASET_PATH, GRANULARITY)
 
 dataset.add_numerical_dataset(
     "Accelerometer.csv",

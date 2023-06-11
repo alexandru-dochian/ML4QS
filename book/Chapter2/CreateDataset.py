@@ -127,7 +127,14 @@ class CreateDataset:
             else:
                 raise ValueError("Unknown aggregation '" + aggregation + "'")
 
-    def add_event_dataset_with_start_timestamp(self, file, start_timestamp_col, interval_col, value_col, aggregation='sum'):
+    def add_event_dataset_with_start_timestamp(
+            self,
+            file,
+            start_timestamp_col,
+            interval_col,
+            value_col,
+            aggregation='sum'
+    ):
         end_timestamp_col = "time_end"
         print(f'Reading data from {file}')
         dataset = pd.read_csv(self.base_dir / file)
@@ -147,8 +154,8 @@ class CreateDataset:
         if self.data_table is None:
             self.create_dataset(min(dataset[start_timestamp_col]), max(
                 dataset[end_timestamp_col]), event_values, value_col)
-        for col in event_values:
-            self.data_table[(str(value_col) + str(col))] = 0
+        for event_column in event_values:
+            self.data_table[(str(event_column))] = 0
 
         # Now we need to start counting by passing along the rows....
         for i in range(0, len(dataset.index)):
@@ -164,12 +171,10 @@ class CreateDataset:
 
             # and add 1 to the rows if we take the sum
             if aggregation == 'sum':
-                self.data_table.loc[relevant_rows.index,
-                                    str(value_col) + str(value)] += 1
+                self.data_table.loc[relevant_rows.index, str(value)] += 1
             # or set to 1 if we just want to know it happened
             elif aggregation == 'binary':
-                self.data_table.loc[relevant_rows.index,
-                                    str(value_col) + str(value)] = 1
+                self.data_table.loc[relevant_rows.index, str(value)] = 1
             else:
                 raise ValueError("Unknown aggregation '" + aggregation + "'")
 

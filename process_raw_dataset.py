@@ -6,7 +6,7 @@ import os
 DATASET_PATH = Path("raw_datasets/tara_raw/")
 RESULT_PATH = Path("./datasets/")
 RESULT_FILENAME = "tara.csv"
-GRANULARITY = 1000
+GRANULARITY = 601000
 
 notebook_path = os.path.realpath("tara")
 
@@ -16,9 +16,9 @@ notebook_path = os.path.realpath("tara")
 
 print("Please wait, this will take a while to run!")
 
-dataset: CreateDataset = CreateDataset(DATASET_PATH, GRANULARITY)
+create_dataset_object: CreateDataset = CreateDataset(DATASET_PATH, GRANULARITY)
 
-dataset.add_numerical_dataset(
+create_dataset_object.add_numerical_dataset(
     "Accelerometer.csv",
     "time",
     ["z", "y", "x"],
@@ -26,7 +26,7 @@ dataset.add_numerical_dataset(
     "accel_"
 )
 
-dataset.add_numerical_dataset(
+create_dataset_object.add_numerical_dataset(
     "Gyroscope.csv",
     "time",
     ["z", "y", "x"],
@@ -34,7 +34,7 @@ dataset.add_numerical_dataset(
     "gyro_"
 )
 
-dataset.add_numerical_dataset(
+create_dataset_object.add_numerical_dataset(
     "Gravity.csv",
     "time",
     ["z", "y", "x"],
@@ -42,7 +42,7 @@ dataset.add_numerical_dataset(
     "gravity_"
 )
 
-dataset.add_numerical_dataset(
+create_dataset_object.add_numerical_dataset(
     "Orientation.csv",
     "time",
     ["qz", "qy", "qx", "qw"],
@@ -50,7 +50,7 @@ dataset.add_numerical_dataset(
     "ori_"
 )
 
-dataset.add_numerical_dataset(
+create_dataset_object.add_numerical_dataset(
     "Magnetometer.csv",
     "time",
     ["z", "y", "x"],
@@ -58,7 +58,7 @@ dataset.add_numerical_dataset(
     "magne_"
 )
 
-dataset.add_numerical_dataset(
+create_dataset_object.add_numerical_dataset(
     "Barometer.csv",
     "time",
     ["relativeAltitude", "pressure"],
@@ -66,7 +66,7 @@ dataset.add_numerical_dataset(
     "bar_"
 )
 
-dataset.add_numerical_dataset(
+create_dataset_object.add_numerical_dataset(
     "Location.csv",
     "time",
     ["altitude", "latitude", "longitude"],
@@ -75,11 +75,11 @@ dataset.add_numerical_dataset(
 )
 
 
-dataset.add_event_dataset_with_start_timestamp(
+create_dataset_object.add_event_dataset_with_start_timestamp(
     "Annotation.csv", "time", "seconds_elapsed", "text", "binary"
 )
 
-dataset = dataset.data_table
+dataset: pd.DataFrame = create_dataset_object.data_table
 target_dataset_path = f"{RESULT_PATH}/{RESULT_FILENAME}"
 print(f"Writing processed dataset to {target_dataset_path}")
 dataset.to_csv(target_dataset_path)

@@ -1,3 +1,4 @@
 *.pyc
+raw_datasets
 datasets
 .idea
